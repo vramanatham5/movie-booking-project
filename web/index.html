@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f4ee">
+  <title>CineBook — Find your next favorite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="CineBook home"><span class="brand-mark">C</span>cinebook<span class="brand-period">.</span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="nav-link active" href="#movies">Movies</a>
+      <a class="nav-link" href="#experience">The experience</a>
+    </nav>
+    <a class="header-cta" href="#movies">Find a movie <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <p class="eyebrow"><span class="eyebrow-line"></span> YOUR FRONT ROW STARTS HERE</p>
+        <h1 id="hero-title">One ticket.<br>A whole new <em>world.</em></h1>
+        <p class="hero-copy">The lights go down. The good stuff begins. Find your next favorite film.</p>
+        <a class="primary-button" href="#movies">See what's playing <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-orbit orbit-one"></div>
+        <div class="hero-orbit orbit-two"></div>
+        <div class="hero-sun"></div>
+        <div class="hero-art-label"><span>THE FEATURE PRESENTATION</span><strong>Big screen.<br>Big feelings.</strong></div>
+        <div class="hero-star star-one">✳</div><div class="hero-star star-two">✦</div>
+        <div class="hero-caption">YOUR SEAT IS WAITING <span>✳</span></div>
+      </div>
+      <div class="hero-bottom"><span>01 — 06</span><span>GOOD FILMS. GREAT NIGHTS.</span><span>SCROLL TO EXPLORE ↓</span></div>
+    </section>
+
+    <section class="movies-section" id="movies">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> HAND-PICKED FOR YOUR NEXT NIGHT OUT</p><h2>Now playing<span class="heading-period">.</span></h2></div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="movie-search" type="search" placeholder="Find your film..." aria-label="Search movies"></label>
+      </div>
+      <div class="filter-row" role="group" aria-label="Filter movies by genre">
+        <button class="filter-chip selected" data-filter="All">All films <span>06</span></button>
+        <button class="filter-chip" data-filter="Drama">Drama</button>
+        <button class="filter-chip" data-filter="Sci-Fi">Sci-fi</button>
+        <button class="filter-chip" data-filter="Comedy">Comedy</button>
+        <button class="filter-chip" data-filter="Animation">Animation</button>
+      </div>
+      <div class="movie-grid" id="movie-grid" aria-live="polite">
+        <div class="loading-message">Finding your next favorite...</div>
+      </div>
+    </section>
+
+    <section class="experience-section" id="experience">
+      <div class="experience-art" aria-hidden="true"><span class="film-frame">✳</span><span class="art-note">GOOD FILMS.<br>GREAT NIGHTS.</span></div>
+      <div class="experience-copy"><p class="eyebrow"><span class="eyebrow-line"></span> YOUR NIGHT, DIRECTED BY YOU</p><h2>Take the<br>scenic <em>route.</em></h2><p>Pick a seat. Grab your favorite person. Let the outside world wait until after the credits. Some nights deserve a little movie magic.</p><a class="text-link" href="#movies">Find your next film <span>↗</span></a></div>
+    </section>
+    <section class="closing-note"><span class="closing-star">✳</span><p>Tonight looks good on you.</p><span>YOUR NEXT GREAT NIGHT STARTS HERE</span></section>
+  </main>
+
+  <footer class="site-footer"><a class="brand" href="#"><span class="brand-mark">C</span>cinebook<span class="brand-period">.</span></a><span>Made for people who love the movies.</span><span>© 2026 CINEBOOK</span></footer>
+
+  <dialog class="booking-dialog" id="booking-dialog" aria-labelledby="booking-title">
+    <button class="dialog-close" id="dialog-close" aria-label="Close booking">×</button>
+    <div class="booking-layout">
+      <div class="booking-poster" id="booking-poster"><span class="poster-kicker">THE FEATURE PRESENTATION</span><span class="poster-title" id="dialog-movie-title"></span><span class="poster-bottom">CINEBOOK FILM CLUB</span></div>
+      <div class="booking-content">
+        <p class="eyebrow"><span class="eyebrow-line"></span> MAKE IT A MOVIE NIGHT</p>
+        <h2 id="booking-title">Book your seats<span class="heading-period">.</span></h2>
+        <div class="booking-meta" id="booking-meta"></div>
+        <form id="booking-form">
+          <label class="field-label" for="booking-date">Choose a date</label><input id="booking-date" name="date" type="date" required>
+          <span class="field-label">Choose a showtime</span><div class="showtime-list" id="showtime-list"></div>
+          <span class="field-label">Choose your seats <span class="muted-label">· ₹14 per seat</span></span>
+          <div class="screen-indicator">SCREEN</div>
+          <div class="seat-map" id="seat-map" aria-label="Select seats"></div>
+          <div class="seat-legend"><span><i class="seat-dot available"></i> Available</span><span><i class="seat-dot selected"></i> Selected</span><span><i class="seat-dot taken"></i> Taken</span></div>
+          <label class="field-label" for="booking-name">Your name</label><input id="booking-name" name="name" autocomplete="name" placeholder="Alex Morgan" required maxlength="100">
+          <label class="field-label" for="booking-email">Email address</label><input id="booking-email" name="email" type="email" autocomplete="email" placeholder="alex@example.com" required maxlength="254">
+          <div class="booking-total"><span id="seat-summary">Select your seats</span><strong id="total-price">₹0</strong></div>
+          <button class="primary-button confirm-button" id="confirm-booking" type="submit" disabled>Confirm booking <span aria-hidden="true">↗</span></button>
+          <p class="form-message" id="form-message" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="confirmation-dialog" id="confirmation-dialog" aria-labelledby="confirmation-title">
+    <button class="dialog-close" id="confirmation-close" aria-label="Close confirmation">×</button>
+    <div class="confirmation-icon">✳</div><p class="eyebrow">IT'S A DATE</p><h2 id="confirmation-title">Movie night,<br><em>sorted.</em></h2>
+    <p id="confirmation-copy"></p><div class="confirmation-code" id="confirmation-code"></div>
+    <button class="primary-button" id="done-button">Lovely, thanks <span>↗</span></button>
+  </dialog>
+  <script src="/app.js" defer></script>
+</body>
+</html>
