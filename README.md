@@ -18,4 +18,4 @@ The backend serves the website and provides `GET /api/movies` and `POST /api/boo
 
 ## GitHub Pages preview
 
-Pushing to `main` deploys the static website from `web/` to [CineBook on GitHub Pages](https://vramanatham5.github.io/movie-booking-project/). The Pages version runs in preview mode: movie listings use the built-in sample catalog, and bookings are simulated for the current browser session. It does not connect to the C++ backend, reserve real seats, or process payments. Run the C++ server for the backend-connected version.
+In the repository settings, select **Settings → Pages → Build and deployment → Source → GitHub Actions**. After this one-time setup, pushes to `main` deploy the static website from `web/` to [CineBook on GitHub Pages](https://vramanatham5.github.io/movie-booking-project/). The Pages version runs in preview mode: movie listings use the built-in sample catalog, and bookings are simulated for the current browser session. It does not connect to the C++ backend, reserve real seats, or process payments. Run the C++ server for the backend-connected version.
