@@ -1,10 +1,19 @@
 const showtimes = ["10:30 AM", "1:45 PM", "4:30 PM", "7:15 PM", "10:00 PM"];
+const demoMovies = [
+  { id: 1, title: "Dune: Part Two", genre: "Sci-Fi · Adventure", rating: "8.8", duration: "2h 46m", poster: "dune" },
+  { id: 2, title: "Poor Things", genre: "Fantasy · Romance", rating: "8.1", duration: "2h 21m", poster: "poor-things" },
+  { id: 3, title: "The Grand Budapest Hotel", genre: "Comedy · Drama", rating: "8.5", duration: "1h 39m", poster: "grand-budapest" },
+  { id: 4, title: "Spider-Man: Across the Spider-Verse", genre: "Animation · Action", rating: "8.7", duration: "2h 20m", poster: "spider-verse" },
+  { id: 5, title: "Past Lives", genre: "Drama · Romance", rating: "8.0", duration: "1h 45m", poster: "past-lives" },
+  { id: 6, title: "Oppenheimer", genre: "Biography · Drama", rating: "8.9", duration: "3h 00m", poster: "oppenheimer" }
+];
 const formatCurrency = (amount) => new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
   maximumFractionDigits: 0
 }).format(amount);
 const takenSeats = new Set(["A3", "A4", "B6", "C2", "C3", "D7", "E1", "E8"]);
+const demoTakenSeats = new Set();
 const movieGrid = document.querySelector("#movie-grid");
 const searchInput = document.querySelector("#movie-search");
 const bookingDialog = document.querySelector("#booking-dialog");
@@ -15,6 +24,8 @@ let movies = [];
 let activeFilter = "All";
 let selectedMovie = null;
 let selectedShowtime = "";
+let demoMode = false;
+let nextDemoBookingId = 1;
 const selectedSeats = new Set();
 
 const today = new Date();
@@ -55,14 +66,36 @@ function renderMovies() {
 }
 
 async function loadMovies() {
+  let response;
   try {
-    const response = await fetch("/api/movies");
-    if (!response.ok) throw new Error(`Movie list request failed (${response.status}).`);
+    response = await fetch(new URL("api/movies", document.baseURI));
+  } catch (error) {
+    enableDemoMode();
+    return;
+  }
+  if (response.status === 404) {
+    enableDemoMode();
+    return;
+  }
+  if (!response.ok) {
+    movieGrid.innerHTML = `<div class="empty-state">Movie list request failed (${response.status}). Please refresh and try again.</div>`;
+    return;
+  }
+  try {
     movies = await response.json();
     renderMovies();
   } catch (error) {
-    movieGrid.innerHTML = `<div class="empty-state">${error.message} Please refresh and try again.</div>`;
+    movieGrid.innerHTML = `<div class="empty-state">Unable to read the movie list: ${error.message}</div>`;
   }
+}
+
+function enableDemoMode() {
+  demoMode = true;
+  movies = demoMovies;
+  const notice = document.querySelector("#demo-notice");
+  notice.textContent = "Preview mode: bookings are simulated for this browser session. No server reservation or payment is made.";
+  notice.hidden = false;
+  renderMovies();
 }
 
 function drawSeats() {
@@ -71,12 +104,14 @@ function drawSeats() {
   ["A", "B", "C", "D", "E"].forEach((row) => {
     for (let number = 1; number <= 8; number += 1) {
       const seatId = `${row}${number}`;
+      const demoSeatKey = `${selectedMovie?.id}|${dateInput.value}|${selectedShowtime}|${seatId}`;
+      const isTaken = takenSeats.has(seatId) || (demoMode && demoTakenSeats.has(demoSeatKey));
       const seat = document.createElement("button");
       seat.type = "button";
-      seat.className = `seat${takenSeats.has(seatId) ? " taken" : ""}${selectedSeats.has(seatId) ? " selected" : ""}`;
-      seat.setAttribute("aria-label", `Seat ${seatId}${takenSeats.has(seatId) ? ", unavailable" : selectedSeats.has(seatId) ? ", selected" : ", available"}`);
+      seat.className = `seat${isTaken ? " taken" : ""}${selectedSeats.has(seatId) ? " selected" : ""}`;
+      seat.setAttribute("aria-label", `Seat ${seatId}${isTaken ? ", unavailable" : selectedSeats.has(seatId) ? ", selected" : ", available"}`);
       seat.setAttribute("aria-pressed", String(selectedSeats.has(seatId)));
-      seat.disabled = takenSeats.has(seatId);
+      seat.disabled = isTaken;
       seat.addEventListener("click", () => {
         if (selectedSeats.has(seatId)) selectedSeats.delete(seatId);
         else if (selectedSeats.size < 8) selectedSeats.add(seatId);
@@ -110,7 +145,9 @@ function openBooking(movie) {
     button.textContent = showtime;
     button.addEventListener("click", () => {
       selectedShowtime = showtime;
+      selectedSeats.clear();
       document.querySelectorAll(".showtime-button").forEach((item) => item.classList.toggle("selected", item === button));
+      drawSeats();
       updateTotal();
     });
     document.querySelector("#showtime-list").append(button);
@@ -137,6 +174,12 @@ movieGrid.addEventListener("click", (event) => {
   if (movie) openBooking(movie);
 });
 
+dateInput.addEventListener("change", () => {
+  selectedSeats.clear();
+  drawSeats();
+  updateTotal();
+});
+
 bookingForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!selectedMovie || !selectedShowtime || selectedSeats.size === 0) return;
@@ -155,13 +198,28 @@ bookingForm.addEventListener("submit", async (event) => {
     email: form.get("email").trim()
   };
   try {
-    const response = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "We couldn't complete your booking.");
+    let result;
+    if (demoMode) {
+      for (const seat of payload.seats) {
+        demoTakenSeats.add(`${selectedMovie.id}|${payload.date}|${selectedShowtime}|${seat}`);
+      }
+      result = {
+        bookingId: `DEMO${String(nextDemoBookingId++).padStart(4, "0")}`,
+        movie: selectedMovie.title,
+        date: payload.date,
+        showtime: selectedShowtime,
+        seats: payload.seats,
+        total: payload.seats.length * 14
+      };
+    } else {
+      const response = await fetch(new URL("api/bookings", document.baseURI), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      result = await response.json();
+      if (!response.ok) throw new Error(result.error || "We couldn't complete your booking.");
+    }
     bookingDialog.close();
     document.querySelector("#confirmation-copy").textContent =
       `${result.movie} · ${result.date} · ${result.showtime} · ${result.seats.join(", ")} · ${formatCurrency(result.total)}`;

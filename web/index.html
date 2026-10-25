@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <header class="site-header">
@@ -51,6 +51,7 @@
         <button class="filter-chip" data-filter="Comedy">Comedy</button>
         <button class="filter-chip" data-filter="Animation">Animation</button>
       </div>
+      <p class="demo-notice" id="demo-notice" role="status" hidden></p>
       <div class="movie-grid" id="movie-grid" aria-live="polite">
         <div class="loading-message">Finding your next favorite...</div>
       </div>
@@ -95,6 +96,6 @@
     <p id="confirmation-copy"></p><div class="confirmation-code" id="confirmation-code"></div>
     <button class="primary-button" id="done-button">Lovely, thanks <span>↗</span></button>
   </dialog>
-  <script src="/app.js" defer></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>

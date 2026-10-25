@@ -72,6 +72,8 @@ h1 em, h2 em { color: var(--accent); font-weight: 600; }
 .filter-chip span { margin-left: 10px; color: #98938a; }
 .filter-chip.selected, .filter-chip:hover { border-color: var(--accent); background: var(--accent); color: white; }
 .filter-chip.selected span { color: #ffccc0; }
+.demo-notice { margin: -9px 0 22px; border-left: 2px solid var(--accent); padding: 10px 13px; background: #fffdfa; color: #69665f; font-size: 11px; line-height: 1.6; }
+.demo-notice[hidden] { display: none; }
 .movie-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 21px; }
 .movie-card { min-width: 0; border: 1px solid #ede8df; padding: 8px 8px 13px; background: #fffdfa; transition: transform .22s, box-shadow .22s; }
 .movie-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px #30281911; }
